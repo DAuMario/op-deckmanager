@@ -32,6 +32,14 @@ class Character(Card):
     has_blocker: bool = False
 
 
+@dataclass
+class Leader(Card):
+    life: int = 0
+    power: int = 0
+    attributes: list[str] = field(default_factory=list)
+    effects: list[str] = field(default_factory=list)
+
+
 if __name__ == "__main__":
     luffy = Character(
         card_id="OP16-012",
