@@ -5,6 +5,7 @@ from typing import Optional
 @dataclass
 class Card:
     """Base Class for all Cards in the One Piece TCG"""
+
     card_id: str
     name: str
     card_type: str
@@ -17,11 +18,16 @@ class Card:
 @dataclass
 class Character(Card):
     """Character Type Class, with Power, Counter, Effects etc."""
+
     cost: int = 0
     power: int = 0
-    counter: int = 0 # 0 = no counter printed on card
-    attributes: list[str] = field(default_factory=list) # usually characters only have 1 attribute, but edge cases exist
-    effects: list[str] = field(default_factory=list) # for now effects as str; gonna update later if needed
+    counter: int = 0  # 0 = no counter printed on card
+    attributes: list[str] = field(
+        default_factory=list
+    )  # usually characters only have 1 attribute, but edge cases exist
+    effects: list[str] = field(
+        default_factory=list
+    )  # for now effects as str; gonna update later if needed
     trigger: Optional[str] = None
     has_blocker: bool = False
 
