@@ -22,12 +22,10 @@ class Character(Card):
     cost: int = 0
     power: int = 0
     counter: int = 0  # 0 = no counter printed on card
-    attributes: list[str] = field(
-        default_factory=list
-    )  # usually characters only have 1 attribute, but edge cases exist
-    effects: list[str] = field(
-        default_factory=list
-    )  # for now effects as str; gonna update later if needed
+    # usually characters only have 1 attribute, but edge cases exist
+    attributes: list[str] = field(default_factory=list)
+    # for now effects as str; gonna update later if needed
+    effects: list[str] = field(default_factory=list)
     trigger: Optional[str] = None
     has_blocker: bool = False
 
@@ -44,7 +42,7 @@ class Leader(Card):
 
 @dataclass
 class Event(Card):
-    """Event Type Card"""
+    """Event Type Card with Cost, Main and/or Counter Effects"""
 
     cost: int = 0
     main_effect: Optional[str] = None
@@ -53,18 +51,28 @@ class Event(Card):
     counter: int = 0  # 0 = event has no counter effect
 
 
+@dataclass
+class Stage(Card):
+    """Stage Type Card with Cost, Effects and Trigger"""
+
+    cost: int = 0
+    effects: list[str] = field(default_factory=list)
+    trigger: Optional[str] = None
+
+
 if __name__ == "__main__":
-    buggy_event = Event(
-        card_id="OP16-057",
-        name="Captain Buggy's Our Savior!!",
-        card_type="Event",
-        color=["Blue"],
-        card_block=5,
+    sunny = Stage(
+        card_id="ST14-017",
+        name="Thousand Sunny",
+        card_type="Stage",
+        color=["Black"],
+        card_block=2,
         rarity="C",
-        affiliations=["Impel Down"],
+        affiliations=["Straw Hat Crew"],
         cost=1,
-        counter_effect="If you have 2 or more [Prisoner of Impel Down] cards, up to 1 of your Leader or Character cards gains +4000 Power during this Battle",
-        trigger="Draw 2 Cards and trash 1 card from your Hand",
-        counter=4000,
+        effects=[
+            "All of your black {Straw Hat Crew} Type Characters gain +1 Cost",
+            "On Play: If you Leader has the {Straw Hat Crew} type, draw 1 card",
+        ],
     )
-    print(buggy_event)
+    print(sunny)
