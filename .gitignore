@@ -10,3 +10,9 @@ __pycache__/
 
 # VS Code
 .vscode/
+
+# Paket-Metadaten (von pip install -e generiert)
+*.egg-info/
+
+# Ruff-Cache
+.ruff_cache/

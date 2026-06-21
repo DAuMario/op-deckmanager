@@ -1,0 +1,12 @@
+[project]
+name = "op-deckmanager"
+version = "0.1.0"
+description = "One Piece TCG deck manager with AI-assisted deckbuilding"
+requires-python = ">=3.13"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
