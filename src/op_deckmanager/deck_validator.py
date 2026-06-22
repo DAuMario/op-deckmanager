@@ -1,5 +1,6 @@
 from op_deckmanager.catalog import Catalog
 from op_deckmanager.deck import Deck
+from op_deckmanager.card import Leader
 
 
 class DeckValidator:
@@ -22,4 +23,13 @@ class DeckValidator:
                 errors.append(
                     f"Only 4 Copies per Card allowed, Card {card_id} is {count} times in the Deck."
                 )
+        return errors
+
+    def _check_leader(self, deck: Deck) -> list[str]:
+        errors: list[str] = []
+        card = self.catalog.get_card(deck.leader_id)
+        if card is None:
+            errors.append(f"{deck.leader_id} does not exist.")
+        elif not isinstance(card, Leader):
+            errors.append(f"{card.card_id} ({card.name}) is not a Leader.")
         return errors
