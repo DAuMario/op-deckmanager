@@ -10,6 +10,24 @@ def validator():
     return DeckValidator(Catalog())
 
 
+def build_valid_deck() -> tuple[Catalog, Deck]:
+    catalog = Catalog()
+    leader = Leader(
+        card_id="leader-01", name="test_name", card_type="Leader", color=["Red"]
+    )
+    catalog.add_card(leader)
+    cards: dict[str, int] = {}
+    for i in range(13):
+        card_id = f"character-{i}"
+        character = Character(
+            card_id=card_id, name="test_name", card_type="Character", color=["Red"]
+        )
+        catalog.add_card(character)
+        cards[card_id] = 2 if i == 12 else 4
+    deck = Deck(name="test", leader_id=leader.card_id, cards=cards)
+    return catalog, deck
+
+
 def test_check_card_count_returns_no_error(validator):
     deck = Deck(name="test", leader_id="test_leader_id", cards={"test_card": 50})
     result = validator._check_card_count(deck)
@@ -129,3 +147,22 @@ def test_check_color_identity_skips_when_leader_invalid():
     validator = DeckValidator(catalog)
     result = validator._check_color_identity(deck)
     assert result == []
+
+
+def test_validate_returns_no_error():
+    catalog, deck = build_valid_deck()
+    validator = DeckValidator(catalog)
+    result = validator.validate(deck)
+    assert result == []
+
+
+def test_validate_returns_multiple_errors():
+    catalog, deck = build_valid_deck()
+    card = Character(
+        card_id="character-000", name="test_name", card_type="Character", color=["Blue"]
+    )
+    catalog.add_card(card)
+    deck.cards[card.card_id] = 1
+    validator = DeckValidator(catalog)
+    result = validator.validate(deck)
+    assert len(result) == 2

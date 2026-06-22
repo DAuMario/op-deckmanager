@@ -9,6 +9,14 @@ class DeckValidator:
     def __init__(self, catalog: Catalog) -> None:
         self.catalog = catalog
 
+    def validate(self, deck: Deck) -> list[str]:
+        errors: list[str] = []
+        errors.extend(self._check_card_count(deck))
+        errors.extend(self._check_max_copies(deck))
+        errors.extend(self._check_leader(deck))
+        errors.extend(self._check_color_identity(deck))
+        return errors
+
     def _check_card_count(self, deck: Deck) -> list[str]:
         errors: list[str] = []
         total = sum(deck.cards.values())
