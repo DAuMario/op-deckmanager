@@ -33,3 +33,20 @@ class DeckValidator:
         elif not isinstance(card, Leader):
             errors.append(f"{card.card_id} ({card.name}) is not a Leader.")
         return errors
+
+    def _check_color_identity(self, deck: Deck) -> list[str]:
+        errors: list[str] = []
+        leader = self.catalog.get_card(deck.leader_id)
+        if not isinstance(leader, Leader):
+            return errors
+        for card_id in deck.cards:
+            card = self.catalog.get_card(card_id)
+            if card is None:
+                continue
+            if not card.color:
+                continue
+            if card.color[0] not in leader.color:
+                errors.append(
+                    f"{card.card_id} ({card.name}) has color {card.color[0]}, which is not in the leader's colors {leader.color}."
+                )
+        return errors

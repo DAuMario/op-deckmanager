@@ -62,3 +62,70 @@ def test_check_leader_returns_card_is_not_leader_type():
     validator = DeckValidator(catalog)
     result = validator._check_leader(deck)
     assert len(result) == 1
+
+
+def test_check_color_identity_returns_no_error():
+    catalog = Catalog()
+    leader = Leader(
+        card_id="leader-01", name="test_name", card_type="Leader", color=["Red"]
+    )
+    character = Character(
+        card_id="character-01", name="test_name", card_type="Character", color=["Red"]
+    )
+    catalog.add_card(leader)
+    catalog.add_card(character)
+    deck = Deck(name="test", leader_id=leader.card_id, cards={character.card_id: 1})
+    validator = DeckValidator(catalog)
+    result = validator._check_color_identity(deck)
+    assert result == []
+
+
+def test_check_color_identity_returns_error():
+    catalog = Catalog()
+    leader = Leader(
+        card_id="leader-01", name="test_name", card_type="Leader", color=["Red"]
+    )
+    character = Character(
+        card_id="character-01", name="test_name", card_type="Character", color=["Blue"]
+    )
+    catalog.add_card(leader)
+    catalog.add_card(character)
+    deck = Deck(name="test", leader_id=leader.card_id, cards={character.card_id: 1})
+    validator = DeckValidator(catalog)
+    result = validator._check_color_identity(deck)
+    assert len(result) == 1
+
+
+def test_check_color_identity_returns_no_error_with_multiple_colored_leader():
+    catalog = Catalog()
+    leader = Leader(
+        card_id="leader-01",
+        name="test_name",
+        card_type="Leader",
+        color=["Red", "Green"],
+    )
+    character = Character(
+        card_id="character-01", name="test_name", card_type="Character", color=["Green"]
+    )
+    catalog.add_card(leader)
+    catalog.add_card(character)
+    deck = Deck(name="test", leader_id=leader.card_id, cards={character.card_id: 1})
+    validator = DeckValidator(catalog)
+    result = validator._check_color_identity(deck)
+    assert result == []
+
+
+def test_check_color_identity_skips_when_leader_invalid():
+    catalog = Catalog()
+    leader = Character(
+        card_id="leader-01", name="test_name", card_type="Leader", color=["Red"]
+    )
+    character = Character(
+        card_id="character-01", name="test_name", card_type="Character", color=["Blue"]
+    )
+    catalog.add_card(leader)
+    catalog.add_card(character)
+    deck = Deck(name="test", leader_id=leader.card_id, cards={character.card_id: 1})
+    validator = DeckValidator(catalog)
+    result = validator._check_color_identity(deck)
+    assert result == []
