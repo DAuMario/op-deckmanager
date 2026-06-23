@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from op_deckmanager.card import Leader
 
 
 @dataclass
@@ -10,21 +9,26 @@ class Deck:
     leader_id: str
     cards: dict[str, int] = field(default_factory=dict)
 
+    def add_card(self, card_id: str, count: int = 1) -> None:
+        if count <= 0:
+            raise ValueError(f"count must be positive, got {count}")
+        self.cards[card_id] = self.cards.get(card_id, 0) + count
 
-if __name__ == "__main__":
-    leader = Leader(
-        card_id="OP01-001",
-        name="Monkey D. Luffy",
-        card_type="Leader",
-        color=["Red"],
-        life=5,
-        power=5000,
-    )
-    print(leader)
+    def remove_card(self, card_id: str, count: int = 1) -> None:
+        if count <= 0:
+            raise ValueError(f"count must be positive, got {count}")
+        if card_id not in self.cards:
+            raise ValueError(f"card {card_id} not found in deck {self.name}")
+        current_count = self.cards[card_id]
+        new_count = current_count - count
+        if new_count < 0:
+            raise ValueError(
+                f"can't remove {count} cards, only {current_count} cards found in deck {self.name}"
+            )
+        if new_count == 0:
+            del self.cards[card_id]
+        else:
+            self.cards[card_id] = new_count
 
-    deck = Deck(
-        name="test",
-        leader_id=leader.card_id,
-        cards={"OP01-002": 4, "OP01-003": 4, "OP01-004": 2},
-    )
-    print(deck)
+    def clear_deck(self) -> None:
+        self.cards.clear()
