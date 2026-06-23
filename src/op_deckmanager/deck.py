@@ -29,3 +29,6 @@ class Deck:
             del self.cards[card_id]
         else:
             self.cards[card_id] = new_count
+
+    def clear_deck(self) -> None:
+        self.cards.clear()
