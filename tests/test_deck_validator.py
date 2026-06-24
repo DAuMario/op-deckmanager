@@ -167,3 +167,21 @@ def test_validate_returns_multiple_errors():
     validator = DeckValidator(catalog, BanList())
     result = validator.validate(deck)
     assert len(result) == 2
+
+
+def test_check_banned_card_is_not_banned():
+    catalog = Catalog()
+    deck = Deck(name="test", leader_id="test_leader_id", cards={"safe_id": 1})
+    ban_list = BanList(banned={"banned_id"})
+    validator = DeckValidator(catalog, ban_list)
+    result = validator._check_banned(deck)
+    assert result == []
+
+
+def test_check_banned_card_is_banned():
+    catalog = Catalog()
+    deck = Deck(name="test", leader_id="test_leader_id", cards={"banned_id": 1})
+    ban_list = BanList(banned={"banned_id"})
+    validator = DeckValidator(catalog, ban_list)
+    result = validator._check_banned(deck)
+    assert len(result) == 1

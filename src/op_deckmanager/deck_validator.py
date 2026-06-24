@@ -17,6 +17,7 @@ class DeckValidator:
         errors.extend(self._check_max_copies(deck))
         errors.extend(self._check_leader(deck))
         errors.extend(self._check_color_identity(deck))
+        errors.extend(self._check_banned(deck))
         return errors
 
     def _check_card_count(self, deck: Deck) -> list[str]:
@@ -59,4 +60,13 @@ class DeckValidator:
                 errors.append(
                     f"{card.card_id} ({card.name}) has color {card.color[0]}, which is not in the leader's colors {leader.color}."
                 )
+        return errors
+
+    def _check_banned(self, deck: Deck) -> list[str]:
+        errors: list[str] = []
+        for card_id in deck.cards:
+            if card_id in self.ban_list.banned:
+                card = self.catalog.get_card(card_id)
+                name = card.name if card else card_id
+                errors.append(f"{card_id} ({name}) is currently banned.")
         return errors
