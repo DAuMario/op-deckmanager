@@ -185,3 +185,30 @@ def test_check_banned_card_is_banned():
     validator = DeckValidator(catalog, ban_list)
     result = validator._check_banned(deck)
     assert len(result) == 1
+
+
+def test_check_restricted_unlisted_card_is_allowed():
+    catalog = Catalog()
+    deck = Deck(name="test", leader_id="test_leader_id", cards={"safe_id": 2})
+    ban_list = BanList(restricted={"restricted_id"})
+    validator = DeckValidator(catalog, ban_list)
+    result = validator._check_restricted(deck)
+    assert result == []
+
+
+def test_check_restricted_multiple_copies_returns_error():
+    catalog = Catalog()
+    deck = Deck(name="test", leader_id="test_leader_id", cards={"restricted_id": 2})
+    ban_list = BanList(restricted={"restricted_id"})
+    validator = DeckValidator(catalog, ban_list)
+    result = validator._check_restricted(deck)
+    assert len(result) == 1
+
+
+def test_check_restricted_allows_single_copy():
+    catalog = Catalog()
+    deck = Deck(name="test", leader_id="test_leader_id", cards={"restricted_id": 1})
+    ban_list = BanList(restricted={"restricted_id"})
+    validator = DeckValidator(catalog, ban_list)
+    result = validator._check_restricted(deck)
+    assert result == []

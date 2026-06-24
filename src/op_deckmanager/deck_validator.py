@@ -70,3 +70,12 @@ class DeckValidator:
                 name = card.name if card else card_id
                 errors.append(f"{card_id} ({name}) is currently banned.")
         return errors
+
+    def _check_restricted(self, deck: Deck) -> list[str]:
+        errors: list[str] = []
+        for card_id, count in deck.cards.items():
+            if card_id in self.ban_list.restricted and count > 1:
+                card = self.catalog.get_card(card_id)
+                name = card.name if card else card_id
+                errors.append(f"{card_id} ({name}) is currently restricted to 1 copy.")
+        return errors
