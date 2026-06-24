@@ -1,13 +1,15 @@
 from op_deckmanager.catalog import Catalog
 from op_deckmanager.deck import Deck
 from op_deckmanager.card import Leader
+from op_deckmanager.ban_list import BanList
 
 
 class DeckValidator:
     """Validates a deck against the One Piece TCG rules."""
 
-    def __init__(self, catalog: Catalog) -> None:
+    def __init__(self, catalog: Catalog, ban_list: BanList) -> None:
         self.catalog = catalog
+        self.ban_list = ban_list
 
     def validate(self, deck: Deck) -> list[str]:
         errors: list[str] = []
