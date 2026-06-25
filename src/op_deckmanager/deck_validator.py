@@ -18,6 +18,8 @@ class DeckValidator:
         errors.extend(self._check_leader(deck))
         errors.extend(self._check_color_identity(deck))
         errors.extend(self._check_banned(deck))
+        errors.extend(self._check_restricted(deck))
+        errors.extend(self._check_banned_pairs(deck))
         return errors
 
     def _check_card_count(self, deck: Deck) -> list[str]:
@@ -78,4 +80,18 @@ class DeckValidator:
                 card = self.catalog.get_card(card_id)
                 name = card.name if card else card_id
                 errors.append(f"{card_id} ({name}) is currently restricted to 1 copy.")
+        return errors
+
+    def _check_banned_pairs(self, deck: Deck) -> list[str]:
+        errors: list[str] = []
+        for pair in self.ban_list.banned_pairs:
+            if all(card_id in deck.cards for card_id in pair):
+                pair_list = list(pair)
+                card1 = self.catalog.get_card(pair_list[0])
+                name1 = card1.name if card1 else pair_list[0]
+                card2 = self.catalog.get_card(pair_list[1])
+                name2 = card2.name if card2 else pair_list[1]
+                errors.append(
+                    f"{pair_list[0]} ({name1}) and {pair_list[1]} ({name2}) can't be in the same deck together."
+                )
         return errors

@@ -212,3 +212,42 @@ def test_check_restricted_allows_single_copy():
     validator = DeckValidator(catalog, ban_list)
     result = validator._check_restricted(deck)
     assert result == []
+
+
+def test_check_banned_pairs_both_cards_in_deck():
+    catalog = Catalog()
+    deck = Deck(
+        name="test",
+        leader_id="test_leader_id",
+        cards={"banned_pair_1": 1, "banned_pair_2": 1},
+    )
+    ban_list = BanList(banned_pairs={frozenset({"banned_pair_1", "banned_pair_2"})})
+    validator = DeckValidator(catalog, ban_list)
+    result = validator._check_banned_pairs(deck)
+    assert len(result) == 1
+
+
+def test_check_banned_pairs_only_one_in_deck():
+    catalog = Catalog()
+    deck = Deck(
+        name="test",
+        leader_id="test_leader_id",
+        cards={"banned_pair_1": 1, "safe_id": 1},
+    )
+    ban_list = BanList(banned_pairs={frozenset({"banned_pair_1", "banned_pair_2"})})
+    validator = DeckValidator(catalog, ban_list)
+    result = validator._check_banned_pairs(deck)
+    assert result == []
+
+
+def test_check_banned_pairs_no_copy_in_deck():
+    catalog = Catalog()
+    deck = Deck(
+        name="test",
+        leader_id="test_leader_id",
+        cards={"safe_id_1": 1, "safe_id_2": 1},
+    )
+    ban_list = BanList(banned_pairs={frozenset({"banned_pair_1", "banned_pair_2"})})
+    validator = DeckValidator(catalog, ban_list)
+    result = validator._check_banned_pairs(deck)
+    assert result == []
